@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven>
+	    <mvc:message-converters register-defaults="false">
+	        <beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	        <beans:bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter" />
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<mvc:interceptors>
+		<beans:bean class="net.iberdok.util.spring.interceptor.RequestTestInterceptor" />
+	</mvc:interceptors>
+	
+	<mvc:interceptors>
+		<beans:bean id="localeChangeInterceptor"
+		    class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		    <beans:property name="paramName" value="lang" />
+		</beans:bean>
+	</mvc:interceptors>
+	
+	<!-- i18n Configuration -->
+	<beans:import resource="classpath:/spring/i18n/i18n.xml" />
+	
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix">
+			<beans:value>/WEB-INF/jsp/</beans:value>
+		</beans:property>
+		<beans:property name="suffix">
+			<beans:value>.jsp</beans:value>
+		</beans:property>
+		<beans:property name="order">
+			<beans:value>1</beans:value>
+		</beans:property>
+	</beans:bean>
+
+	<context:component-scan base-package="net.iberdok.bsmvcw.controller" />	
+	
+</beans:beans>

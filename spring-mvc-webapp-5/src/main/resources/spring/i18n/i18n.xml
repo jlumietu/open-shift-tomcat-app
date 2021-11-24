@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<beans:bean id="messageSource"
+		class="net.iberdok.util.spring.context.support.CustomReloadableResourceBundleMessageSource">
+		<!-- class="org.springframework.context.support.ReloadableResourceBundleMessageSource" -->
+	    <beans:property name="basename" value="classpath:i18n/messages" />
+	    <beans:property name="defaultEncoding" value="UTF-8"/>
+	    <beans:property name="resources">
+	    	<beans:list>
+	    		<beans:value>classpath:i18n/messages_es</beans:value>
+	    	</beans:list>
+	    </beans:property>
+	</beans:bean>
+
+	<beans:bean id="localeChangeInterceptor"
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<beans:property name="paramName" value="lang" />
+	</beans:bean>
+
+	 
+	<beans:bean id="localeResolver"
+	    class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+	    <beans:property name="defaultLocale" value="es"/>
+	</beans:bean>
+	 
+</beans:beans>

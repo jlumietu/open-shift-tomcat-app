@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+        
+    <!-- Tiles de apache -->
+	<beans:import resource="classpath:/spring/tiles/Tiles.xml" />
+    
+    <!-- Log Configuration -->
+	<beans:import resource="classpath:/spring/log/Log4j.xml" />
+
+	<!-- Util Configuration -->
+	<beans:import resource="classpath:/spring/util/Version.xml" />
+	<beans:import resource="classpath:/spring/util/Util.xml" />
+		
+	<!-- i18n Configuration -->
+	<beans:import resource="classpath:/spring/i18n/i18n.xml" />
+	
+	<!-- Security Configuration -->
+	<beans:import resource="classpath:/spring/security/Security.xml" />
+
+	<context:component-scan base-package="net.iberdok.bsmvcw.service" />
+	<context:component-scan base-package="net.iberdok.bsmvcw.dao" />
+	<context:component-scan base-package="net.iberdok.bsmvcw.model.db" />	        
+    
+</beans:beans>

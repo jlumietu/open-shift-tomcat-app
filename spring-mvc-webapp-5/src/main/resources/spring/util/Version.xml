@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+				
+
+	<util:properties id="applicationProperties" location="classpath:/properties/application.properties"/>
+	
+	<beans:bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<beans:property name="locations">
+	       <beans:list>
+	       		<beans:value>classpath:/properties/application.properties</beans:value>
+	       </beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="systemPropertiesReader" class="net.iberdok.util.sys.SystemPropertiesReaderImpl">
+		<beans:property name="showSystemProperties">
+			<beans:list>
+				<beans:value>java.version</beans:value>
+				<beans:value>jvmRoute</beans:value>
+				<beans:value>catalina.home</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="versionUtil" class="net.iberdok.util.IberdokVersionUtilImpl">
+		<beans:property name="properties" ref="applicationProperties" />
+		<beans:property name="versionPropertyName" value="application.version" />
+		<beans:property name="revisionPropertyName" value="application.revision" />
+		<beans:property name="systemPropertiesReader" ref="systemPropertiesReader" />
+		<beans:property name="libsVersion">
+			<beans:list>
+				<beans:bean class="net.iberdok.model.io.LibraryVersionInfoBaseImpl" />				
+				<beans:bean class="net.iberdok.util.spring.SpringUtilitiesVersion" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+ 		
+</beans:beans>

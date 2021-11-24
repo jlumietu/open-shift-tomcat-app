@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd" >
+
+	<security:http pattern="!entorno{static.resources.path}/**" security="none"/>
+  	<security:http pattern="!entorno{application.login.form}*" security="none"/>
+	<security:http pattern="!entorno{application.login.error}*" security="none"/>
+	<security:http pattern="!entorno{application.logout.result}*" security="none"/>
+	
+	<security:http pattern="/services/test/**" security="none"/>
+	
+	<!-- security:http pattern="/services/**" auto-config='false' use-expressions="false"
+		authentication-manager-ref="mainAuthenticationManager" 
+		create-session="never" entry-point-ref="serviceAccessDeniedHandler">
+		<security:intercept-url pattern="/services/admin/root/**" access="ROLE_ROOT" />
+		<security:intercept-url pattern="/services/admin/**" access="ROLE_ADMIN" />
+		<security:intercept-url pattern="/services/**" access="ROLE_USER" />
+		<security:custom-filter ref="restHeaderServiceUserNameTokenAuthenticationFilter" 
+			position="FORM_LOGIN_FILTER" />		
+		<security:access-denied-handler ref="serviceAccessDeniedHandler"/>
+		<security:csrf disabled="true"/>
+	</security:http-->
+	
+	<security:http auto-config='false' use-expressions="true"
+		authentication-manager-ref="mainAuthenticationManager" >
+		<!-- security:http-basic/-->
+		<!-- security:intercept-url pattern="/**" access="ROLE_BASIC" /-->
+		<security:intercept-url pattern="/secured/admin/root/**" access="hasRole('ROLE_ROOT')" />
+		<security:intercept-url pattern="/secured/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/secured/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/**" access="permitAll" />
+		<security:form-login login-page="/login.htm" 
+			username-parameter="usrname" 
+			password-parameter="usrpwd" 
+			login-processing-url="!entorno{application.login.processing}"
+			default-target-url="!entorno{application.secured.home}"
+			always-use-default-target="true"
+			authentication-failure-url="!entorno{application.login.error}" 
+			authentication-success-handler-ref="webAuthenticationSuccessHandler"  
+			authentication-failure-handler-ref="webAuthenticationFailureHandler" 
+			authentication-details-source-ref="" />
+		
+		<security:logout logout-url="!entorno{application.logout.processing}" 
+			success-handler-ref="webLogoutSuccessHandler" /> 
+		
+		<!-- As of Spring Security 4.0, CSRF protection is enabled by default with XML configuration. 
+		If you would like to disable CSRF protection, the corresponding XML configuration can be seen below. 
+		http://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html#csrf-configure
+		-->
+		<security:csrf disabled="true"/>
+					
+	</security:http>
+	
+	<security:authentication-manager id="mainAuthenticationManager">
+		   	
+    	<security:authentication-provider>
+    		<security:user-service>
+    			<security:user name="dogagayo" password="dogagayo" authorities="ROLE_USER" />
+    			<security:user name="user" password="user" authorities="ROLE_USER" />
+    			<security:user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMIN" />
+    			<security:user name="root" password="root" authorities="ROLE_USER,ROLE_ADMIN,ROLE_ROOT" />
+    		</security:user-service>
+    	</security:authentication-provider>
+    	
+  	</security:authentication-manager>
+  	
+  	<beans:bean id="serviceAccessDeniedHandler" class="net.iberdok.security.handler.RestServiceAccessDeniedHandler" />
+  	
+  	<beans:bean id="webAuthenticationSuccessHandler" 
+  			class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+  		<beans:property name="defaultTargetUrl" value="!entorno{application.secured.home}" />
+  		<beans:property name="alwaysUseDefaultTargetUrl" value="false" />
+  	</beans:bean>
+  	
+  	<beans:bean id="webAuthenticationFailureHandler" 
+  			class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+  		<beans:property name="defaultFailureUrl" value="!entorno{application.login.error}" />		
+  	</beans:bean>
+  	
+  	<beans:bean id="webLogoutSuccessHandler" 
+  			class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+  		<beans:property name="defaultTargetUrl" value="!entorno{application.logout.result}" />		
+  	</beans:bean>
+  	
+  	<beans:bean class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler"/>	
+
+</beans:beans>
